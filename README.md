@@ -5,7 +5,7 @@ TrendFlix AI is an OTT Trend Intelligence Platform that collects live movie and 
 ## Tech Stack
 
 * Python
-* TMDB API
+* TVmaze API
 * SQLite
 * Pandas
 * Scikit-Learn
