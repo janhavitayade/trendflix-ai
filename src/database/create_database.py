@@ -17,6 +17,18 @@ CREATE TABLE IF NOT EXISTS shows (
 )
 """)
 
+#snapshot table to track history
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS snapshots (
+    snapshot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    show_id INTEGER,
+    weight INTEGER,
+    rating REAL,
+    collected_at TEXT,
+    FOREIGN KEY (show_id) REFERENCES shows(id)
+)
+""")
+
 connection.commit()
 
 connection.close()
