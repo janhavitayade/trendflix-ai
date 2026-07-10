@@ -114,5 +114,80 @@ print("\nShow Status Distribution:")
 
 for row in results:
     print(row)
+#--------------------to get total snapshots--------------------------------
+import sqlite3
+
+connection = sqlite3.connect("database/trendflix.db")
+cursor = connection.cursor()
+
+cursor.execute("""
+SELECT COUNT(*)
+FROM snapshots
+""")
+
+result = cursor.fetchone()
+
+print("\nTotal Snapshots:")
+print(result[0])
+
+#--------------------to get first 5 shows--------------------------------
+cursor.execute("""
+SELECT *
+FROM shows
+LIMIT 5
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+
+#--------------------to get average, minimum, and maximum ratings--------------------------------
+cursor.execute("""
+SELECT
+    AVG(rating),
+    MIN(rating),
+    MAX(rating)
+FROM snapshots
+WHERE rating IS NOT NULL
+""")
+print("\nAverage, Minimum, and Maximum Ratings:")
+print(cursor.fetchone())
+
+#--------------------to get premiered dates of first 10 shows--------------------------------
+cursor.execute("""
+SELECT premiered
+FROM shows
+LIMIT 10
+""")
+
+results = cursor.fetchall()
+
+print("\nPremiered Dates:")
+
+for row in results:
+    print(row)
+#--------------------to get distinct show statuses--------------------------------
+cursor.execute("""
+SELECT DISTINCT status
+FROM shows
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+#--------------------to get show IDs with NULL ratings--------------------------------
+cursor.execute("""
+SELECT show_id
+FROM snapshots
+WHERE rating IS NULL
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
 
 connection.close()
+
