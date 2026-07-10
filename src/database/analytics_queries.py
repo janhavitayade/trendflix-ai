@@ -189,5 +189,42 @@ results = cursor.fetchall()
 for row in results:
     print(row)
 
+#--------------------to get shows with NULL runtime--------------------------------
+print("\nShows with NULL runtime:")
+cursor.execute("""
+SELECT name,runtime
+FROM everything
+WHERE runtime IS NULL
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+#--------------------to get shows with NULL averageRuntime--------------------------------
+print("\nShows with NULL averageRuntime:")
+cursor.execute("""
+SELECT name,averageRuntime
+FROM everything
+WHERE averageRuntime IS NULL
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+#--------------------to get show 5 genres--------------------------------
+print("\nFirst 5 Shows and Their Genres:")
+cursor.execute("""
+SELECT name, genres
+FROM everything
+LIMIT 5
+""")
+
+results = cursor.fetchall()
+
+for row in results:
+    print(row)
+
 connection.close()
 
