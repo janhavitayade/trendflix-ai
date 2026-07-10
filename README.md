@@ -1,35 +1,58 @@
-# TrendFlix AI
+# 🎬 TrendFlix AI
 
-TrendFlix AI is an OTT Trend Intelligence Platform that collects live TV show data, stores historical snapshots, performs analytics, and aims to forecast future content popularity using Machine Learning.
+TrendFlix AI is an OTT Trend Intelligence Platform that collects live TV show data, stores historical snapshots, performs SQL analytics, trains machine learning models, and visualizes insights through an interactive Streamlit dashboard.
 
 ## Project Objective
 
-The goal of TrendFlix AI is to analyze OTT content trends and predict future popularity patterns. The platform collects data from public APIs, stores historical records, generates analytical insights, and will eventually provide AI-powered trend forecasting through an interactive dashboard.
+The goal of TrendFlix AI is to analyze OTT content trends and forecast future popularity patterns. The platform combines data collection, database management, analytics, machine learning, and visualization into a complete end-to-end data science project.
 
 ---
 
 ## Current Features
 
-### Data Collection
+### 📡 Data Collection
 
 * Fetches live TV show data from the TVMaze API
-* Stores raw data as CSV snapshots
-* Maintains historical records for analysis
+* Stores raw API responses as CSV snapshots
+* Maintains historical records for trend analysis
 
-### Database Management
+### 🗄 Database Management
 
 * SQLite database integration
 * Structured storage of TV show metadata
 * Historical snapshot tracking with timestamps
+* Dedicated tables for analytics and machine learning
 
-### Analytics Layer
+### 📊 Analytics Layer
 
 * SQL-based analytics and reporting
 * Top-rated show analysis
 * Language distribution analysis
 * Show status distribution analysis
 * Popularity (weight) analysis
-* Data quality checks for missing values
+* Missing value detection and data quality checks
+
+### 🤖 Machine Learning
+
+* Machine learning dataset generation
+* Feature engineering and preprocessing
+* Linear Regression model training
+* Model evaluation using:
+
+  * MAE (Mean Absolute Error)
+  * MSE (Mean Squared Error)
+  * R² Score
+* Feature engineering experiments and model comparison
+
+### 📈 Dashboard
+
+* Interactive Streamlit dashboard
+* KPI cards for platform statistics
+* Top-rated shows table
+* Status distribution visualization
+* Language distribution visualization
+* Machine learning model summary
+* Dataset preview
 
 ---
 
@@ -40,9 +63,9 @@ The goal of TrendFlix AI is to analyze OTT content trends and predict future pop
 * SQLite
 * Pandas
 * SQL
+* Scikit-Learn
+* Streamlit
 * Git & GitHub
-* Scikit-Learn (Planned)
-* Streamlit (Planned)
 
 ---
 
@@ -51,25 +74,35 @@ The goal of TrendFlix AI is to analyze OTT content trends and predict future pop
 ```text
 TrendFlix-AI/
 │
-├── app/                  # Streamlit dashboard (future)
-├── data/                 # Raw CSV snapshots
-├── database/             # SQLite database
-│   └── trendflix.db
-├── models/               # ML models (future)
-├── notebooks/            # Experiments and analysis
-├── src/
-│   ├── fetch_tvmaze.py
-│   ├── __init__.py
-│   └── database/
-│       ├── create_database.py
-│       ├── insert_shows.py
-│       ├── insert_snapshots.py
-│       ├── query_shows.py
-│       └── analytics_queries.py
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+├───app
+│       
+├───data
+│       ml_dataset.csv
+│       tvmaze_shows_20260708_135132.csv
+│       
+├───database
+│       trendflix.db
+│       
+├───models
+├───notebooks
+└───src
+    │   fetch_tvmaze.py
+    │   __init__.py
+    │   
+    ├───database
+    │       analytics_queries.py
+    │       create_database.py
+    │       create_everything_table.py
+    │       insert_everything_into_table_everything.py
+    │       insert_shows.py
+    │       insert_snapshots.py
+    │       query_shows.py
+    │       
+    └───ml
+            prepare_dataset_v1.py
+            prepare_dataset_v2.py
+            train_model_v1.py
+            train_model_v2.py
 ```
 
 ---
@@ -83,17 +116,15 @@ fetch_tvmaze.py
       ↓
 CSV Snapshot
       ↓
-insert_shows.py
+SQLite Database
       ↓
-shows table
+shows / snapshots / everything
       ↓
-insert_snapshots.py
+SQL Analytics
       ↓
-snapshots table
+Machine Learning
       ↓
-analytics_queries.py
-      ↓
-Insights & Reports
+Streamlit Dashboard
 ```
 
 ---
@@ -114,6 +145,8 @@ Fields:
 * ended
 * weight
 
+---
+
 ### snapshots
 
 Stores historical observations for trend analysis.
@@ -128,34 +161,114 @@ Fields:
 
 ---
 
+### everything
+
+Stores detailed TVMaze metadata for advanced analytics and machine learning.
+
+Includes:
+
+* id
+* name
+* type
+* language
+* genres
+* status
+* runtime
+* averageRuntime
+* premiered
+* ended
+* rating
+* weight
+* network
+* summary
+* updated
+* and other TVMaze attributes
+
+---
+
+## Machine Learning Pipeline
+
+### Dataset V1
+
+Features:
+
+* rating
+* status_encoded
+* premiered_year
+
+Target:
+
+* weight
+
+Performance:
+
+```text
+MAE: 7.04
+MSE: 154.07
+R² Score: 0.13
+```
+
+---
+
+### Dataset V2 (Feature Engineering Experiment)
+
+Additional Features:
+
+* averageRuntime
+* genre_count
+* show_age
+
+Performance:
+
+```text
+MAE: 7.32
+MSE: 178.16
+R² Score: 0.12
+```
+
+Conclusion:
+
+Feature engineering experiment completed and evaluated. Additional engineered features did not improve model performance, highlighting the importance of feature quality over feature quantity.
+
+---
+
 ## Progress
 
-### Completed
+### ✅ Completed
 
-* API Integration
+* TVMaze API Integration
 * CSV Data Storage
 * SQLite Database Setup
 * Historical Snapshot Tracking
 * SQL Analytics & Reporting
+* Data Cleaning & Preprocessing
+* Machine Learning Dataset Creation
+* Linear Regression Model Training
+* Feature Engineering Experiments
+* Streamlit Dashboard V1
 * GitHub Version Control
 
-### In Progress
+### 🚧 In Progress
 
-* Data Preparation for Machine Learning
+* Dashboard Enhancements
+* Machine Learning Improvements
 
-### Planned
+### 📌 Planned
 
-* Trend Forecasting Model
-* Streamlit Dashboard
-* Interactive Visualizations
+* Random Forest Model
+* Gradient Boosting Model
+* Model Comparison Dashboard
+* Trend Forecasting Improvements
 * Deployment
 
 ---
 
 ## Future Vision
 
-TrendFlix AI will forecast OTT content popularity by analyzing historical trends and presenting insights through an interactive dashboard. The final system will combine data engineering, analytics, machine learning, and visualization into a single end-to-end project.
+TrendFlix AI aims to become a complete OTT trend intelligence platform capable of collecting live entertainment data, analyzing historical patterns, forecasting popularity trends, and presenting insights through an interactive AI-powered dashboard.
+
+---
 
 ## Author
 
-Janhavi Tayade
+**Janhavi Tayade**
