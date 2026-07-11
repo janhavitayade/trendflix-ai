@@ -253,26 +253,25 @@ elif page == "Machine Learning":
 
     st.subheader("Best Model")
 
-    st.success("Random Forest Regressor")
-
+    st.success("Extra Trees Regressor")
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric(
             "MAE",
-            "6.57"
+            "6.40"
         )
 
     with col2:
         st.metric(
             "MSE",
-            "150.97"
+            "148.68"
         )
 
     with col3:
         st.metric(
             "R² Score",
-            "0.25"
+            "0.26"
         )
 
     st.divider()
@@ -294,19 +293,31 @@ elif page == "Machine Learning":
         {
             "Model": [
                 "Linear Regression",
-                "Random Forest"
+                "Random Forest",
+                "Decision Tree",
+                "Gradient Boosting",
+                "Extra Trees"
             ],
             "MAE": [
                 7.32,
-                6.57
+                6.57,
+                7.18,
+                6.79,
+                6.40
             ],
             "MSE": [
                 178.16,
-                150.97
+                150.97,
+                160.23,
+                167.24,
+                148.68
             ],
             "R²": [
                 0.12,
-                0.25
+                0.25,
+                0.21,
+                0.17,
+                0.26
             ]
         }
     )
@@ -320,7 +331,7 @@ elif page == "Machine Learning":
 
     st.info(
         """
-        Random Forest Regressor achieved the best performance
+        Extra Trees Regressor achieved the best performance
         among the tested models and is currently the primary
         forecasting model used in TrendFlix AI.
         """
