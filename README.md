@@ -2,6 +2,8 @@
 
 TrendFlix AI is an OTT Trend Intelligence Platform that collects live TV show data, stores historical snapshots, performs SQL analytics, trains machine learning models, and visualizes insights through an interactive Streamlit dashboard.
 
+🔗 **Live app:** [trendflix-ai.streamlit.app](https://trendflix-ai.streamlit.app/)
+
 ## Project Objective
 
 The goal of TrendFlix AI is to analyze OTT content trends and forecast future popularity patterns. The platform combines data collection, database management, analytics, machine learning, and visualization into a complete end-to-end data science project.
@@ -35,6 +37,21 @@ Windows:
 ```bash
 pip install -r requirements.txt
 ```
+
+### Generate the Production Model
+
+Before running the dashboard, generate the trained model artifacts used by the Predict page:
+
+```bash
+python src/ml/benchmark_models.py
+```
+
+This prints the model leaderboard and saves two files to `models/`:
+
+* `extra_trees_model.pkl` — the trained production model (Extra Trees Regressor)
+* `feature_columns.pkl` — the exact feature order the model expects
+
+Re-run this any time `data/ml_dataset.csv` or the model logic changes.
 
 ### Run Dashboard
 
@@ -73,12 +90,20 @@ streamlit run app/app.py
 * Feature engineering and preprocessing
 * Multiple model benchmarking
 * Production-ready model selection
+* Model persistence with `joblib` for live inference
 * Feature importance analysis
 * Model evaluation using:
 
   * MAE (Mean Absolute Error)
   * MSE (Mean Squared Error)
   * R² Score
+
+### 🔮 Live Prediction
+
+* Interactive "Predict" page in the dashboard
+* Users enter unseen/hypothetical show attributes (rating, status, premiere year, runtime, genre count)
+* `show_age` is auto-calculated from premiere year
+* Returns a live popularity (`weight`) prediction from the saved Extra Trees Regressor — no retraining required at runtime
 
 ### 📈 Dashboard
 
@@ -89,6 +114,7 @@ streamlit run app/app.py
 * Language distribution visualization
 * Model leaderboard
 * Feature importance visualization
+* Live prediction interface
 * Dataset explorer
 
 ---
@@ -101,6 +127,7 @@ streamlit run app/app.py
 * Pandas
 * SQL
 * Scikit-Learn
+* Joblib
 * Streamlit
 * Git & GitHub
 
@@ -124,6 +151,8 @@ OTT-Trend-Intelligence/
 │   └── trendflix.db
 │
 ├── models
+│   ├── extra_trees_model.pkl
+│   └── feature_columns.pkl
 │
 ├── notebooks
 │
@@ -177,7 +206,9 @@ Model Benchmarking
       ↓
 Feature Importance
       ↓
-Streamlit Dashboard
+Model Persistence (joblib)
+      ↓
+Streamlit Dashboard (Live Prediction)
 ```
 
 ---
@@ -274,7 +305,9 @@ MSE: 148.68
 R² Score: 0.26
 ```
 
-The Extra Trees Regressor achieved the highest predictive performance and was selected as the final production model for TrendFlix AI.
+The Extra Trees Regressor achieved the highest predictive performance and was selected as the final production model for TrendFlix AI. It is persisted with `joblib` (`models/extra_trees_model.pkl`) and loaded directly by the Streamlit dashboard's Predict page for live inference, with no retraining at request time.
+
+> **Note:** the Predict page's `status_encoded` mapping assumes alphabetical label encoding (`Ended = 0, Running = 1, To Be Determined = 2`), matching scikit-learn's default `LabelEncoder` behavior. If the original preprocessing pipeline used a different mapping, update `STATUS_ENCODING_MAP` in `app/app.py` to match.
 
 ---
 
@@ -325,6 +358,17 @@ Used for benchmarking multiple machine learning algorithms and feature importanc
 
 ---
 
+### Model Persistence & Live Inference
+
+The production model (Extra Trees Regressor) and its expected feature column order are saved with `joblib` after benchmarking:
+
+* `models/extra_trees_model.pkl`
+* `models/feature_columns.pkl`
+
+The Streamlit dashboard loads both artifacts once (cached with `st.cache_resource`) and uses them to score user-entered inputs on the Predict page, without needing scikit-learn to retrain anything at runtime.
+
+---
+
 ## Dashboard Features
 
 ### Overview
@@ -345,6 +389,12 @@ Used for benchmarking multiple machine learning algorithms and feature importanc
 * Production model summary
 * Model leaderboard
 * Feature importance chart
+
+### Predict
+
+* Live popularity prediction from user-entered show attributes
+* Powered by the saved Extra Trees Regressor
+* Auto-calculated `show_age` from premiere year
 
 ### Dataset Explorer
 
@@ -368,8 +418,11 @@ Used for benchmarking multiple machine learning algorithms and feature importanc
 * Model Benchmarking
 * Feature Importance Analysis
 * Production Model Selection
+* Model Persistence (joblib)
+* Live Prediction Interface
 * Streamlit Dashboard
 * GitHub Version Control
+* Deployment to Streamlit Community Cloud
 
 ### 🚧 In Progress
 
@@ -380,7 +433,6 @@ Used for benchmarking multiple machine learning algorithms and feature importanc
 ### 📌 Planned
 
 * Dashboard Screenshots
-* Project Deployment
 * Automated Data Refresh Pipeline
 * Advanced Forecasting Models
 
