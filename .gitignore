@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 data/tvmaze_shows_*.csv
+database/trendflix.db
