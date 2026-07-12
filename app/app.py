@@ -3,6 +3,15 @@ import sqlite3
 import pandas as pd
 import base64
 import os
+import datetime
+
+# --------------------------------------------------
+# NEW: joblib is used to load the persisted Extra Trees model
+# (see benchmark_models.py, which now saves models/extra_trees_model.pkl
+# and models/feature_columns.pkl) so the Predict page can score
+# user-entered inputs without retraining anything at runtime.
+# --------------------------------------------------
+import joblib
 
 # --------------------------------------------------
 # NEW: Plotly is used only to REPLACE the flat st.bar_chart() calls
@@ -31,6 +40,33 @@ def get_base64_image(path):
     with open(path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/png;base64,{encoded}"
+
+# --------------------------------------------------
+# NEW: cached loader for the production model.
+# WHY cache_resource: joblib.load() opens a file and reconstructs a
+# fitted sklearn estimator — that's relatively expensive to redo on
+# every single widget interaction/rerun. st.cache_resource keeps the
+# same in-memory model object across reruns until the underlying file
+# changes or the process restarts.
+# --------------------------------------------------
+
+@st.cache_resource
+def load_production_model():
+    """Load the saved Extra Trees model + its expected feature order.
+
+    Returns (model, feature_columns) or (None, None) if the artifacts
+    haven't been generated yet (i.e. benchmark_models.py hasn't been
+    run since the joblib.dump() lines were added to it).
+    """
+    model_path = "models/extra_trees_model.pkl"
+    columns_path = "models/feature_columns.pkl"
+
+    if not os.path.exists(model_path) or not os.path.exists(columns_path):
+        return None, None
+
+    model = joblib.load(model_path)
+    feature_columns = joblib.load(columns_path)
+    return model, feature_columns
 
 # --------------------------------------------------
 # PAGE CONFIG
@@ -218,6 +254,31 @@ header {background: transparent !important;}
     font-weight: 700;
 }
 
+/* ---- Prediction result tile ---- */
+.nf-predict-result {
+    background: linear-gradient(120deg, #1a1a1a 0%, #0d0d0d 100%);
+    border: 1px solid var(--nf-red);
+    border-radius: 10px;
+    padding: 28px 32px;
+    text-align: center;
+    margin-top: 10px;
+}
+.nf-predict-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--nf-red);
+    letter-spacing: 1px;
+    line-height: 1;
+}
+.nf-predict-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--nf-text-dim);
+    margin-bottom: 8px;
+}
+
 /* NOTE: the hero logo no longer uses st.image() (see get_base64_image
    helper above) — it's inlined as base64 in a plain centered <div>,
    which sidesteps Streamlit's own image container styling entirely.
@@ -402,6 +463,7 @@ page = st.sidebar.radio(
         "Overview",
         "Analytics",
         "Machine Learning",
+        "Predict",
         "Dataset Explorer"
     ],
     label_visibility="collapsed"
@@ -851,6 +913,153 @@ elif page == "Machine Learning":
         """,
         unsafe_allow_html=True
     )
+
+# --------------------------------------------------
+# NEW: PREDICT PAGE
+# --------------------------------------------------
+# Lets a user enter unseen/hypothetical show attributes and get a
+# live "weight" (popularity) prediction from the saved Extra Trees
+# model. Model + feature order are loaded once via load_production_model()
+# (cached with st.cache_resource above).
+#
+# status_encoded ASSUMPTION: sklearn's LabelEncoder assigns codes in
+# alphabetical order of the unique string labels by default. Given the
+# three statuses used elsewhere in this app (Running / Ended / To Be
+# Determined), alphabetical order gives:
+#   Ended = 0, Running = 1, To Be Determined = 2
+# If your original preprocessing notebook used a different mapping
+# (e.g. a manual dict, or OrdinalEncoder with a custom category order),
+# update STATUS_ENCODING_MAP below to match it exactly — otherwise
+# predictions will be systematically off for shows that aren't "Ended".
+# --------------------------------------------------
+
+elif page == "Predict":
+
+    st.markdown("<div class='nf-eyebrow'>LIVE INFERENCE</div>", unsafe_allow_html=True)
+    st.markdown("<div class='nf-hero-title' style='font-size:52px;'>🔮 Predict Popularity</div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    model, feature_columns = load_production_model()
+
+    if model is None:
+        st.warning(
+            "No saved model found at `models/extra_trees_model.pkl`. "
+            "Run `python benchmark_models.py` locally first (it now also "
+            "saves the trained model + feature order to the `models/` "
+            "folder), then commit those two files so Streamlit Cloud can "
+            "load them."
+        )
+    else:
+        st.markdown(
+            """
+            <div class="nf-card">
+            Enter attributes for a hypothetical or unseen show below.
+            The saved <b>Extra Trees Regressor</b> will predict its
+            popularity <b>weight</b> score.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # ---- Status encoding map (see assumption note above) ----
+        STATUS_ENCODING_MAP = {
+            "Ended": 0,
+            "Running": 1,
+            "To Be Determined": 2
+        }
+
+        current_year = datetime.date.today().year
+
+        with st.form("predict_form"):
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                rating = st.slider(
+                    "Rating",
+                    min_value=0.0,
+                    max_value=10.0,
+                    value=7.5,
+                    step=0.1
+                )
+
+                status_label = st.selectbox(
+                    "Status",
+                    list(STATUS_ENCODING_MAP.keys())
+                )
+
+                premiered_year = st.number_input(
+                    "Premiered Year",
+                    min_value=1950,
+                    max_value=current_year,
+                    value=2018,
+                    step=1
+                )
+
+            with col2:
+                average_runtime = st.number_input(
+                    "Average Runtime (minutes)",
+                    min_value=1,
+                    max_value=300,
+                    value=45,
+                    step=1
+                )
+
+                genre_count = st.number_input(
+                    "Genre Count",
+                    min_value=1,
+                    max_value=10,
+                    value=2,
+                    step=1
+                )
+
+                # show_age is derived the same way it would have been
+                # during feature engineering (current_year - premiere
+                # year) rather than asked for independently, since the
+                # two fields are not truly independent inputs. Shown
+                # as a disabled field so the user can see, not edit, it.
+                show_age = current_year - premiered_year
+                st.number_input(
+                    "Show Age (auto-calculated)",
+                    value=show_age,
+                    disabled=True
+                )
+
+            submitted = st.form_submit_button("Predict Weight")
+
+        if submitted:
+
+            status_encoded = STATUS_ENCODING_MAP[status_label]
+
+            input_row = pd.DataFrame(
+                [{
+                    "rating": rating,
+                    "status_encoded": status_encoded,
+                    "premiered_year": premiered_year,
+                    "averageRuntime": average_runtime,
+                    "genre_count": genre_count,
+                    "show_age": show_age
+                }]
+            )
+
+            # Reorder columns to exactly match training-time order,
+            # regardless of the dict order used to build input_row.
+            input_row = input_row[feature_columns]
+
+            prediction = model.predict(input_row)[0]
+
+            st.markdown(
+                f"""
+                <div class="nf-predict-result">
+                    <div class="nf-predict-label">Predicted Weight</div>
+                    <div class="nf-predict-value">{prediction:.2f}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            with st.expander("View input sent to the model"):
+                st.dataframe(input_row, use_container_width=True)
 
 # --------------------------------------------------
 # DATASET EXPLORER PAGE

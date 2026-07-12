@@ -1,9 +1,9 @@
+import os
+import joblib
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-
 from sklearn.linear_model import LinearRegression
-
 from sklearn.tree import DecisionTreeRegressor
 
 from sklearn.ensemble import (
@@ -28,16 +28,16 @@ df = pd.read_csv("data/ml_dataset.csv")
 # Features
 # ----------------------------
 
-X = df[
-    [
-        "rating",
-        "status_encoded",
-        "premiered_year",
-        "averageRuntime",
-        "genre_count",
-        "show_age"
-    ]
+FEATURE_COLUMNS = [
+    "rating",
+    "status_encoded",
+    "premiered_year",
+    "averageRuntime",
+    "genre_count",
+    "show_age"
 ]
+
+X = df[FEATURE_COLUMNS]
 
 y = df["weight"]
 
@@ -77,6 +77,7 @@ models = {
 # ----------------------------
 
 results = []
+trained_models = {}
 
 for name, model in models.items():
 
@@ -84,6 +85,8 @@ for name, model in models.items():
         X_train,
         y_train
     )
+
+    trained_models[name] = model
 
     predictions = model.predict(
         X_test
@@ -135,3 +138,34 @@ results_df = results_df.sort_values(
 print("\nModel Leaderboard:\n")
 
 print(results_df)
+
+# ----------------------------
+# NEW: Persist the production model
+# ----------------------------
+# WHY: benchmark_models.py used to just print a leaderboard and throw
+# every trained model away when the script exited. The Streamlit app
+# needs an actual fitted model object on disk to make live predictions
+# from user input on the new "Predict" page — so we save the Extra
+# Trees Regressor (the model already selected as production, per the
+# app's own "Production Model" section) as a .pkl file with joblib.
+#
+# We also save FEATURE_COLUMNS alongside the model. This guarantees
+# the app always builds its prediction input in the exact same column
+# order the model was trained on, even if this list is edited later.
+
+os.makedirs("models", exist_ok=True)
+
+BEST_MODEL_NAME = "Extra Trees"
+
+joblib.dump(
+    trained_models[BEST_MODEL_NAME],
+    "models/extra_trees_model.pkl"
+)
+
+joblib.dump(
+    FEATURE_COLUMNS,
+    "models/feature_columns.pkl"
+)
+
+print(f"\nSaved production model '{BEST_MODEL_NAME}' -> models/extra_trees_model.pkl")
+print("Saved feature column order -> models/feature_columns.pkl")
