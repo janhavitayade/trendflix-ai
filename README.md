@@ -138,47 +138,52 @@ streamlit run app/app.py
 ```text
 OTT-Trend-Intelligence/
 │
-├── app
-│   └── app.py
-│
-├── assets
-│
-├── data
-│   ├── ml_dataset.csv
-│   └── tvmaze_shows_20260708_135132.csv
-│
-├── database
-│   └── trendflix.db
-│
-├── models
-│   ├── extra_trees_model.pkl
-│   └── feature_columns.pkl
-│
-├── notebooks
-│
-└── src
-    │
-    ├── fetch_tvmaze.py
-    ├── __init__.py
-    │
-    ├── database
-    │   ├── analytics_queries.py
-    │   ├── create_database.py
-    │   ├── create_everything_table.py
-    │   ├── insert_everything_into_table_everything.py
-    │   ├── insert_shows.py
-    │   ├── insert_snapshots.py
-    │   └── query_shows.py
-    │
-    └── ml
-        ├── benchmark_models.py
-        ├── feature_importance.py
-        ├── final_model.py
-        ├── prepare_dataset_v1.py
-        ├── prepare_dataset_v2.py
-        ├── train_model_v1.py
-        ├── train_model_v2.py
-        └── train_random_forest.py
+│                       
+├───app
+│       app.py
+│       
+├───assets
+│       trendflix_favicon.png
+│       trendflix_logo.png
+│       trendflix_logo.svg
+│       
+├───data
+│       ml_dataset.csv
+│       tvmaze_shows_20260712_132104.csv
+│       
+├───database
+│       trendflix.db
+│       
+├───models
+│       extra_trees_model.pkl
+│       feature_columns.pkl
+│       
+├───notebooks
+└───src
+    │   fetch_tvmaze.py
+    │   __init__.py
+    │   
+    ├───database
+    │       analytics_queries.py
+    │       create_database.py
+    │       create_everything_table.py
+    │       insert_everything_into_table_everything.py
+    │       insert_shows.py
+    │       insert_snapshots.py
+    │       query_shows.py
+    │       
+    └───ml
+        │   benchmark_models.py
+        │   feature_importance.py
+        │   final_model.py
+        │   prepare_dataset_v2.py
+        │   
+        └───archive
+                prepare_dataset_v1.py
+                train_model_v1.py
+                train_model_v2.py
+                train_random_forest.py
+                tvmaze_shows_20260708_135132.csv
 ```
 
 ---
@@ -424,15 +429,8 @@ The Streamlit dashboard loads both artifacts once (cached with `st.cache_resourc
 * GitHub Version Control
 * Deployment to Streamlit Community Cloud
 
-### 🚧 In Progress
-
-* Dashboard Enhancements
-* Portfolio Optimization
-* Project Documentation
-
 ### 📌 Planned
 
-* Dashboard Screenshots
 * Automated Data Refresh Pipeline
 * Advanced Forecasting Models
 
