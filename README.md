@@ -7,6 +7,41 @@ TrendFlix AI is an OTT Trend Intelligence Platform that collects live TV show da
 The goal of TrendFlix AI is to analyze OTT content trends and forecast future popularity patterns. The platform combines data collection, database management, analytics, machine learning, and visualization into a complete end-to-end data science project.
 
 ---
+## Quick Start
+
+### Clone Repository
+
+```bash
+git clone https://github.com/janhavitayade/trendflix-ai.git
+cd trendflix-ai
+```
+
+### Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+### Activate Environment
+
+Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run Dashboard
+
+```bash
+streamlit run app/app.py
+```
+
 
 ## Current Features
 
@@ -278,7 +313,7 @@ R² Score: 0.13
 
 ---
 
-### Dataset V2
+### Dataset V2 (updated over V1)
 
 Additional engineered features:
 

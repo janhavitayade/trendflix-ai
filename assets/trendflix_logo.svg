@@ -1,0 +1,22 @@
+<svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B0000"/>
+      <stop offset="45%" stop-color="#E50914"/>
+      <stop offset="100%" stop-color="#FF4D4D"/>
+    </linearGradient>
+    <linearGradient id="tFold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- top bar of the T -->
+  <rect x="6" y="4" width="88" height="24" rx="3" fill="url(#tGrad)"/>
+  <!-- stem of the T -->
+  <rect x="38" y="4" width="24" height="92" rx="3" fill="url(#tGrad)"/>
+
+  <!-- subtle fold shadow where the bar meets the stem, echoing a ribbon-fold look -->
+  <rect x="38" y="4" width="24" height="92" fill="url(#tFold)"/>
+  <rect x="6" y="4" width="88" height="24" fill="url(#tFold)"/>
+</svg>
