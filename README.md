@@ -36,13 +36,14 @@ The goal of TrendFlix AI is to analyze OTT content trends and forecast future po
 
 * Machine learning dataset generation
 * Feature engineering and preprocessing
-* Linear Regression model training
+* Multiple model benchmarking
+* Production-ready model selection
+* Feature importance analysis
 * Model evaluation using:
 
   * MAE (Mean Absolute Error)
   * MSE (Mean Squared Error)
   * R² Score
-* Feature engineering experiments and model comparison
 
 ### 📈 Dashboard
 
@@ -51,8 +52,9 @@ The goal of TrendFlix AI is to analyze OTT content trends and forecast future po
 * Top-rated shows table
 * Status distribution visualization
 * Language distribution visualization
-* Machine learning model summary
-* Dataset preview
+* Model leaderboard
+* Feature importance visualization
+* Dataset explorer
 
 ---
 
@@ -72,37 +74,47 @@ The goal of TrendFlix AI is to analyze OTT content trends and forecast future po
 ## Project Structure
 
 ```text
-TrendFlix-AI/
+OTT-Trend-Intelligence/
 │
-├───app
-│       
-├───data
-│       ml_dataset.csv
-│       tvmaze_shows_20260708_135132.csv
-│       
-├───database
-│       trendflix.db
-│       
-├───models
-├───notebooks
-└───src
-    │   fetch_tvmaze.py
-    │   __init__.py
-    │   
-    ├───database
-    │       analytics_queries.py
-    │       create_database.py
-    │       create_everything_table.py
-    │       insert_everything_into_table_everything.py
-    │       insert_shows.py
-    │       insert_snapshots.py
-    │       query_shows.py
-    │       
-    └───ml
-            prepare_dataset_v1.py
-            prepare_dataset_v2.py
-            train_model_v1.py
-            train_model_v2.py
+├── app
+│   └── app.py
+│
+├── assets
+│
+├── data
+│   ├── ml_dataset.csv
+│   └── tvmaze_shows_20260708_135132.csv
+│
+├── database
+│   └── trendflix.db
+│
+├── models
+│
+├── notebooks
+│
+└── src
+    │
+    ├── fetch_tvmaze.py
+    ├── __init__.py
+    │
+    ├── database
+    │   ├── analytics_queries.py
+    │   ├── create_database.py
+    │   ├── create_everything_table.py
+    │   ├── insert_everything_into_table_everything.py
+    │   ├── insert_shows.py
+    │   ├── insert_snapshots.py
+    │   └── query_shows.py
+    │
+    └── ml
+        ├── benchmark_models.py
+        ├── feature_importance.py
+        ├── final_model.py
+        ├── prepare_dataset_v1.py
+        ├── prepare_dataset_v2.py
+        ├── train_model_v1.py
+        ├── train_model_v2.py
+        └── train_random_forest.py
 ```
 
 ---
@@ -122,7 +134,13 @@ shows / snapshots / everything
       ↓
 SQL Analytics
       ↓
+Feature Engineering
+      ↓
 Machine Learning
+      ↓
+Model Benchmarking
+      ↓
+Feature Importance
       ↓
 Streamlit Dashboard
 ```
@@ -186,6 +204,60 @@ Includes:
 
 ---
 
+## Project Results
+
+### Dataset Statistics
+
+* Total TV Shows: 240
+* Historical Snapshots: 240
+* Features Engineered: 6
+* Machine Learning Models Compared: 5
+
+---
+
+### Model Leaderboard
+
+| Model             |  MAE |    MSE |   R² |
+| ----------------- | ---: | -----: | ---: |
+| Extra Trees       | 6.40 | 148.68 | 0.26 |
+| Random Forest     | 6.57 | 150.97 | 0.25 |
+| Decision Tree     | 7.18 | 160.23 | 0.21 |
+| Gradient Boosting | 6.79 | 167.24 | 0.17 |
+| Linear Regression | 7.32 | 178.16 | 0.12 |
+
+---
+
+### Production Model
+
+**Extra Trees Regressor**
+
+Performance:
+
+```text
+MAE: 6.40
+MSE: 148.68
+R² Score: 0.26
+```
+
+The Extra Trees Regressor achieved the highest predictive performance and was selected as the final production model for TrendFlix AI.
+
+---
+
+### Feature Importance
+
+| Feature        | Importance (%) |
+| -------------- | -------------: |
+| rating         |          52.58 |
+| averageRuntime |          14.88 |
+| premiered_year |          10.65 |
+| show_age       |          10.24 |
+| genre_count    |           8.44 |
+| status_encoded |           3.21 |
+
+Key insight: TV show ratings are by far the strongest predictor of popularity weight in the current dataset.
+
+---
+
 ## Machine Learning Pipeline
 
 ### Dataset V1
@@ -195,10 +267,6 @@ Features:
 * rating
 * status_encoded
 * premiered_year
-
-Target:
-
-* weight
 
 Performance:
 
@@ -210,25 +278,43 @@ R² Score: 0.13
 
 ---
 
-### Dataset V2 (Feature Engineering Experiment)
+### Dataset V2
 
-Additional Features:
+Additional engineered features:
 
 * averageRuntime
 * genre_count
 * show_age
 
-Performance:
+Used for benchmarking multiple machine learning algorithms and feature importance analysis.
 
-```text
-MAE: 7.32
-MSE: 178.16
-R² Score: 0.12
-```
+---
 
-Conclusion:
+## Dashboard Features
 
-Feature engineering experiment completed and evaluated. Additional engineered features did not improve model performance, highlighting the importance of feature quality over feature quantity.
+### Overview
+
+* Platform statistics
+* Project architecture
+* KPI metrics
+
+### Analytics
+
+* Top-rated shows
+* Status distribution
+* Language distribution
+* Show filtering
+
+### Machine Learning
+
+* Production model summary
+* Model leaderboard
+* Feature importance chart
+
+### Dataset Explorer
+
+* Search TV shows
+* Interactive dataset browsing
 
 ---
 
@@ -243,29 +329,31 @@ Feature engineering experiment completed and evaluated. Additional engineered fe
 * SQL Analytics & Reporting
 * Data Cleaning & Preprocessing
 * Machine Learning Dataset Creation
-* Linear Regression Model Training
-* Feature Engineering Experiments
-* Streamlit Dashboard V1
+* Feature Engineering
+* Model Benchmarking
+* Feature Importance Analysis
+* Production Model Selection
+* Streamlit Dashboard
 * GitHub Version Control
 
 ### 🚧 In Progress
 
 * Dashboard Enhancements
-* Machine Learning Improvements
+* Portfolio Optimization
+* Project Documentation
 
 ### 📌 Planned
 
-* Random Forest Model
-* Gradient Boosting Model
-* Model Comparison Dashboard
-* Trend Forecasting Improvements
-* Deployment
+* Dashboard Screenshots
+* Project Deployment
+* Automated Data Refresh Pipeline
+* Advanced Forecasting Models
 
 ---
 
 ## Future Vision
 
-TrendFlix AI aims to become a complete OTT trend intelligence platform capable of collecting live entertainment data, analyzing historical patterns, forecasting popularity trends, and presenting insights through an interactive AI-powered dashboard.
+TrendFlix AI aims to become a complete OTT trend intelligence platform capable of collecting live entertainment data, analyzing historical patterns, forecasting popularity trends, benchmarking machine learning models, and presenting insights through an interactive AI-powered dashboard.
 
 ---
 
