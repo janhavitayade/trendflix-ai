@@ -432,7 +432,6 @@ The Streamlit dashboard loads both artifacts once (cached with `st.cache_resourc
 
 ### 📌 Planned
 
-* 
 * Historical Popularity Tracking
 * Time-Series Popularity Forecasting (ARIMA / Prophet)
 
