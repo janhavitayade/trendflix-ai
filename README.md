@@ -428,11 +428,13 @@ The Streamlit dashboard loads both artifacts once (cached with `st.cache_resourc
 * Streamlit Dashboard
 * GitHub Version Control
 * Deployment to Streamlit Community Cloud
+* Automated Data Refresh Pipeline(updates daily at 20:00 IST)
 
 ### 📌 Planned
 
-* Automated Data Refresh Pipeline
-* Advanced Forecasting Models
+* 
+* Historical Popularity Tracking
+* Time-Series Popularity Forecasting (ARIMA / Prophet)
 
 ---
 
